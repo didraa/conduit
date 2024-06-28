@@ -1,5 +1,6 @@
 import {NavLink} from "react-router-dom";
 import {useAppSelector} from "../../state/storeHooks";
+import {User} from "../../types/user";
 
 const Header = () => {
     const { user} = useAppSelector(state => state.app);
@@ -14,32 +15,45 @@ const Header = () => {
                     </li>
 
                     {user ?
-                        <>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" to="/editor"><i className="ion-compose"></i>&nbsp;New Article </NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" to="/settings"> <i className="ion-gear-a"></i>&nbsp;Settings </NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" to={"/profile/" + user.username}>
-                                    <img src="" className="user-pic"/>
-                                    Eric Simons
-                                </NavLink>
-                            </li>
-                        </> :
-                        <>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" to="/login">Sign in</NavLink>
-                            </li>
-                            <li className="nav-item">
-                                <NavLink className="nav-link" to="/register">Sign up</NavLink>
-                            </li>
-                        </>
+                        <UserLinks user={user}/>
+                         :
+                        <GuestLinks/>
                     }
                 </ul>
             </div>
         </nav>
+    )
+}
+
+const GuestLinks = () => {
+    return(
+        <>
+            <li className="nav-item">
+                <NavLink className="nav-link" to="/login">Sign in</NavLink>
+            </li>
+            <li className="nav-item">
+                <NavLink className="nav-link" to="/register">Sign up</NavLink>
+            </li>
+        </>
+    )
+}
+
+const UserLinks = ({user}: {user: User}) => {
+    return(
+        <>
+            <li className="nav-item">
+                <NavLink className="nav-link" to="/editor"><i className="ion-compose"></i>&nbsp;New Article </NavLink>
+            </li>
+            <li className="nav-item">
+                <NavLink className="nav-link" to="/settings"> <i className="ion-gear-a"></i>&nbsp;Settings </NavLink>
+            </li>
+            <li className="nav-item">
+                <NavLink className="nav-link" to={"/profile/" + user.username}>
+                    <img src={user.image || undefined} alt="user-pic" className="user-pic"/>
+                    {user.username}
+                </NavLink>
+            </li>
+        </>
     )
 }
 
