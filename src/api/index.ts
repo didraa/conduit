@@ -6,12 +6,12 @@ import {SettingsFormValue} from "../types/form";
 import {ArticleComment} from "../types/comment";
 
 const instance = axios.create({
-    baseURL: 'https://api.realworld.io/api',
+    baseURL: 'https://api.realworld.io/api/',
 });
 
 instance.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token'); // Assuming you store the token in localStorage
+        const token = localStorage.getItem('token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -40,6 +40,10 @@ export const userAPI = {
     },
     async updateSettings(user: SettingsFormValue): Promise<User> {
         const response = await instance.put(`/users`, {user})
+        return response.data.user;
+    },
+    async login(): Promise<User> {
+        const response = await instance.get(`/user`)
         return response.data.user;
     }
 }

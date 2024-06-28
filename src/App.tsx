@@ -9,19 +9,20 @@ import Settings from "./components/pages/Settings/Settings";
 import Profile from "./components/pages/Profile/Profile";
 import Article from "./components/pages/Article/Article";
 import {useDispatch} from "react-redux";
-import {signInUser} from "./state/AppSlices";
+import {authUser, signInUser} from "./state/AppSlice";
 import ArticleEditor from "./components/ArticleEditor/ArticleEditor";
 import {createArticle, editArticle} from "./state/ArtileEditorSlice";
+import {useAppDispatch} from "./state/storeHooks";
 
 function App() {
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
-            dispatch(signInUser())
+            dispatch(authUser())
         }
-    }, [])
+    }, [dispatch])
   return (
       <>
           <Router>

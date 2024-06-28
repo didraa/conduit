@@ -32,13 +32,18 @@ const appSlice = createSlice({
         builder
             .addCase(signUpUser.fulfilled, (state, action) => {
                 state.user = action.payload;
-                state.isAuth = true;
+                state.formErrors = '';
             })
             .addCase(signInUser.fulfilled, (state, action) => {
                 state.user = action.payload;
                 state.formErrors = '';
                 state.isAuth = true;
                 localStorage.setItem('token', action.payload.token);
+            })
+            .addCase(authUser.fulfilled, (state, action) => {
+                state.user = action.payload;
+                state.formErrors = '';
+                state.isAuth = true;
             })
             .addCase(signInUser.rejected, (state, action) => {
                 if (action.payload) {
@@ -70,9 +75,26 @@ export const signUpUser = createAsyncThunk<User, UserForRegistration, {rejectVal
 export const signInUser = createAsyncThunk<User, UserForLogin, {rejectValue: string}>(
     'appSlice/signInUser',
     async (formData, {rejectWithValue}) => {
+
         try {
             const {email, password} = formData;
             return await userAPI.signIn(email, password);
+        } catch (error) {
+            if (axios.isAxiosError(error) && error.response) {
+                const data = error.response.data.errors;
+                return rejectWithValue(Object.keys(data).map(key => key + " " + data[key]).join(", ") as string)
+            } else {
+                return rejectWithValue("An error occurred while signing in");
+            }
+        }
+    }
+)
+
+export const authUser = createAsyncThunk<User, undefined, {rejectValue: string}>(
+    'appSlice/authUser',
+    async (_,  {rejectWithValue}) => {
+        try {
+            return await userAPI.login();
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
                 const data = error.response.data.errors;
