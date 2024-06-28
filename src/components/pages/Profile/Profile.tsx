@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import {useDispatch, useSelector}  from "react-redux";
 
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import ArticlesViewer from "../../ArticlesViewer/ArticlesViewer";
@@ -11,9 +10,8 @@ const Profile = () => {
     let params = useParams();
     const dispatch = useAppDispatch();
     const username = params.username;
-    const {isLoading, currentUser} = useAppSelector(state => state.profile)
+    const { currentUser} = useAppSelector(state => state.profile)
     const [type, setType] = useState('my')
-
 
     useEffect(() => {
         if (username !== undefined)  dispatch(getUserProfile(username))
